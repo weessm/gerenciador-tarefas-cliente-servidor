@@ -4,6 +4,12 @@
 
 Este projeto é um gerenciador de tarefas distribuído implementado em um modelo cliente-servidor. Utilizando sockets TCP para comunicação, o cliente envia comandos para adicionar, remover, atualizar e listar tarefas. O servidor processa esses comandos em threads separadas, garantindo uma comunicação confiável e a integridade das operações.
 
+## Propósito do Software
+O gerenciador de tarefas permite aos usuários adicionar, remover, atualizar e listar tarefas. O cliente envia comandos ao servidor, que processa as solicitações e retorna as respostas adequadas.
+
+## Motivação da Escolha do Protocolo de Transporte
+TCP foi escolhido como protocolo de transporte porque ele oferece uma conexão confiável, garantindo que todas as mensagens sejam entregues na ordem correta e sem perda de dados. Isso é crucial para um gerenciador de tarefas onde a integridade dos dados é importante.
+
 ## Funcionamento
 
 - **Servidor:** Espera por conexões de clientes e processa comandos recebidos para manipular tarefas em um armazenamento centralizado.
@@ -11,31 +17,54 @@ Este projeto é um gerenciador de tarefas distribuído implementado em um modelo
 
 ## Protocolo de Comunicação
 
-### Comandos do Cliente
+### Eventos e Estados
 
-- **ADD:** Adiciona uma nova tarefa.
+#### Estados do Cliente
 
-  - **Formato:** `ADD:Descrição da tarefa`
-  - **Resposta do Servidor:** `Tarefa adicionada.`
+- **Conectado:** Cliente está conectado ao servidor e pronto para enviar comandos.
+- **Desconectado:** Cliente está desconectado do servidor.
 
-- **REMOVE:** Remove uma tarefa pelo índice.
+#### Estados do Servidor
 
-  - **Formato:** `REMOVE:Índice`
-  - **Resposta do Servidor:** `Tarefa removida.` ou `Índice inválido.`
+- **Aguardando Conexão:** Servidor está esperando por novos clientes.
+- **Processando Solicitação:** Servidor está processando a solicitação de um cliente.
+- **Conexão Encerrada:** Servidor encerra a conexão com o cliente.
 
-- **UPDATE:** Atualiza a descrição de uma tarefa pelo índice.
+### Mensagens
+A comunicação é baseada em mensagens enviadas através de sockets TCP. Cada mensagem segue um formato específico descrito abaixo.
 
-  - **Formato:** `UPDATE:Índice:Descrição da nova tarefa`
-  - **Resposta do Servidor:** `Tarefa atualizada.` ou `Índice inválido.`
+### Formato das Mensagens
+As mensagens são strings de texto simples, codificadas em UTF-8, com comandos e dados separados por dois pontos (:) quando necessário. Exemplo: `COMANDO:ARGUMENTO1:ARGUMENTO2`.
 
-- **LIST:** Lista todas as tarefas.
+### Comandos
 
-  - **Formato:** `LIST`
-  - **Resposta do Servidor:** Lista de tarefas com índices.
+Servidor é iniciado.
+- **Estado do Servidor:** `Aguardando Conexão`
 
-- **EXIT:** Solicita desconexão do servidor.
-  - **Formato:** `EXIT`
-  - **Resposta do Servidor:** Nenhuma. O servidor encerra a conexão.
+Cliente se conecta ao servidor.
+- **Estado do Cliente:** `Conectado`
+- **Estado do Servidor:** `Processando Solicitação`
+
+Cliente envia comando **ADD.**
+- **Mensagem:** `ADD:Descrição`
+- **Resposta do Servidor:** `Tarefa adicionada.`
+
+Cliente envia comando **LIST.**
+- **Mensagem:** `LIST`
+- **Resposta do Servidor:** Lista de tarefas no formato `Índice. Descrição -- (Endereço do cliente)`
+
+Cliente envia comando **UPDATE.**
+- **Mensagem:** `UPDATE:Índice:Descrição`
+- **Resposta do Servidor:** `Tarefa atualizada.` ou `Índice inválido.`
+
+Cliente envia comando **REMOVE.**
+- **Mensagem:** `REMOVE:Índice`
+- **Resposta do Servidor:** `Tarefa removida.` ou `Índice inválido.`
+
+Cliente envia comando **EXIT.**
+- **Mensagem:** Nenhuma. O servidor encerra a conexão.
+- **Estado do Cliente:** `Desconectado`
+- **Estado do Servidor:** `Conexão Encerrada`
 
 ### Respostas do Servidor
 
@@ -46,6 +75,7 @@ Este projeto é um gerenciador de tarefas distribuído implementado em um modelo
 
 - **Servidor:** Python 3.x, acesso à rede.
 - **Cliente:** Python 3.x, acesso à rede.
+- **Rede:** Cliente e servidor devem estar na mesma rede ou acessíveis através da internet.
 
 ## Como Executar
 
@@ -81,24 +111,38 @@ Este projeto é um gerenciador de tarefas distribuído implementado em um modelo
 
 ## Exemplo de Uso
 
+Todo o uso é facilidado por um menu, evitando erros ao digitar os comandos ou formatação.
+```bash
+=== Menu ===
+1. Adicionar tarefa
+2. Remover tarefa
+3. Atualizar tarefa
+4. Listar tarefas
+5. Sair
+```
+
 1. **Adicionar uma tarefa:**
 
-   - Comando: `ADD:Comprar leite`
+   - Comando: `1`
+   - Entrada: `Limpar a casa`
    - Resposta: `Tarefa adicionada.`
 
 2. **Listar tarefas:**
 
-   - Comando: `LIST`
-   - Resposta: `0. Comprar leite`
+   - Comando: `4`
+   - Resposta: `0. Limpar a casa -- (192.168.XX.XX)`
 
 3. **Atualizar uma tarefa:**
 
-   - Comando: `UPDATE:0:Comprar pão`
+   - Comando: `3`
+   - Entrada: `0`
+   - Entrada: `Alterando`
    - Resposta: `Tarefa atualizada.`
 
 4. **Remover uma tarefa:**
 
-   - Comando: `REMOVE:0`
+   - Comando: `2`
+   - Entrada: `0`
    - Resposta: `Tarefa removida.`
 
 5. **Sair do cliente:**
