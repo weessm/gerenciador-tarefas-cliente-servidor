@@ -146,4 +146,4 @@ Todo o uso é facilidado por um menu, evitando erros ao digitar os comandos ou f
    - Resposta: `Tarefa removida.`
 
 5. **Sair do cliente:**
-   - Comando: `EXIT`
+   - Comando: `5`
