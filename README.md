@@ -15,7 +15,7 @@ TCP foi escolhido como protocolo de transporte porque ele oferece uma conexão c
 - **Servidor:** Espera por conexões de clientes e processa comandos recebidos para manipular tarefas em um armazenamento centralizado.
 - **Cliente:** Conecta-se ao servidor, envia comandos específicos e recebe respostas correspondentes às operações realizadas.
 
-## Protocolo de Comunicação
+## Protocolo de Aplicação
 
 ### Eventos e Estados
 
