@@ -1,13 +1,19 @@
 # Gerenciador de Tarefas Cliente-Servidor
 
+# Autores
+
+Weslei Miranda, Thiago de Freitas, Leonam Rabelo, Eduardo Takeshi
+
 ## Descrição
 
 Este projeto é um gerenciador de tarefas distribuído implementado em um modelo cliente-servidor. Utilizando sockets TCP para comunicação, o cliente envia comandos para adicionar, remover, atualizar e listar tarefas. O servidor processa esses comandos em threads separadas, garantindo uma comunicação confiável e a integridade das operações.
 
 ## Propósito do Software
+
 O gerenciador de tarefas permite aos usuários adicionar, remover, atualizar e listar tarefas. O cliente envia comandos ao servidor, que processa as solicitações e retorna as respostas adequadas.
 
 ## Motivação da Escolha do Protocolo de Transporte
+
 TCP foi escolhido como protocolo de transporte porque ele oferece uma conexão confiável, garantindo que todas as mensagens sejam entregues na ordem correta e sem perda de dados. Isso é crucial para um gerenciador de tarefas onde a integridade dos dados é importante.
 
 ## Funcionamento
@@ -31,37 +37,46 @@ TCP foi escolhido como protocolo de transporte porque ele oferece uma conexão c
 - **Conexão Encerrada:** Servidor encerra a conexão com o cliente.
 
 ### Mensagens
+
 A comunicação é baseada em mensagens enviadas através de sockets TCP. Cada mensagem segue um formato específico descrito abaixo.
 
 ### Formato das Mensagens
+
 As mensagens são strings de texto simples, codificadas em UTF-8, com comandos e dados separados por dois pontos (:) quando necessário. Exemplo: `COMANDO:ARGUMENTO1:ARGUMENTO2`.
 
 ### Comandos
 
 Servidor é iniciado.
+
 - **Estado do Servidor:** `Aguardando Conexão`
 
 Cliente se conecta ao servidor.
+
 - **Estado do Cliente:** `Conectado`
 - **Estado do Servidor:** `Processando Solicitação`
 
 Cliente envia comando **ADD.**
+
 - **Mensagem:** `ADD:Descrição`
 - **Resposta do Servidor:** `Tarefa adicionada.`
 
 Cliente envia comando **LIST.**
+
 - **Mensagem:** `LIST`
 - **Resposta do Servidor:** Lista de tarefas no formato `Índice. Descrição -- (Endereço do cliente)`
 
 Cliente envia comando **UPDATE.**
+
 - **Mensagem:** `UPDATE:Índice:Descrição`
 - **Resposta do Servidor:** `Tarefa atualizada.` ou `Índice inválido.`
 
 Cliente envia comando **REMOVE.**
+
 - **Mensagem:** `REMOVE:Índice`
 - **Resposta do Servidor:** `Tarefa removida.` ou `Índice inválido.`
 
 Cliente envia comando **EXIT.**
+
 - **Mensagem:** Nenhuma. O servidor encerra a conexão.
 - **Estado do Cliente:** `Desconectado`
 - **Estado do Servidor:** `Conexão Encerrada`
@@ -91,7 +106,7 @@ Cliente envia comando **EXIT.**
 2. Altere a linha 55 em server.py para o endereço IPv4 da rede
 
    ```python
-   host = '192.168.XX.XX'  # Substituir pelo endereço IP do servidor na rede (IPV4)
+   host = '192.168.XX.XX'  # Substituir pelo endereço IP do servidor na rede (IPv4)
    ```
 
 3. Execute o servidor:
@@ -112,6 +127,7 @@ Cliente envia comando **EXIT.**
 ## Exemplo de Uso
 
 Todo o uso é facilidado por um menu, evitando erros ao digitar os comandos ou formatação.
+
 ```bash
 === Menu ===
 1. Adicionar tarefa
@@ -146,4 +162,8 @@ Todo o uso é facilidado por um menu, evitando erros ao digitar os comandos ou f
    - Resposta: `Tarefa removida.`
 
 5. **Sair do cliente:**
+
    - Comando: `5`
+
+6. **Encerrar servidor (comando dado no servidor)**
+   - Comando: `exit`

@@ -55,7 +55,7 @@ def handle_client(client_socket, addr):
 def main():
     global server_running
 
-    host = '192.168.72.9'  # Substituir pelo endereço IP do servidor na rede (IPV4)
+    host = '192.168.XX.XX'  # Substituir pelo endereço IP do servidor na rede (IPv4)
     port = 12345
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
