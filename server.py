@@ -13,8 +13,7 @@ def handle_client(client_socket, addr):
 
             if request.startswith('ADD'):
                 _, task = request.split(':', 1)
-                tasks.append(task.strip())
-                print(addr[0])
+                tasks.append("".join(f"{task.strip()} -- ({addr[0]})"))
                 client_socket.send("Tarefa adicionada.".encode('utf-8'))
             elif request.startswith('REMOVE'):
                 _, index = request.split(':', 1)
@@ -28,7 +27,7 @@ def handle_client(client_socket, addr):
                 _, index, new_task = request.split(':', 2)
                 index = int(index.strip())
                 if 0 <= index < len(tasks):
-                    tasks[index] = new_task.strip()
+                    tasks[index] = "".join(f"{new_task.strip()} -- {addr[0]}")
                     client_socket.send("Tarefa atualizada.".encode('utf-8'))
                 else:
                     client_socket.send("Índice inválido.".encode('utf-8'))
